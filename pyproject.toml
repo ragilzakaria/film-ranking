@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "film-ranking"
+name = "film_ranking"
 version = "0.1.0"
 description = "Movies impact analyzer/ranking tool."
 authors = ["Maulana Ragil Zakariah <m.zakariah@student.uw.edu.pl>"]
@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+pytest = "^8.2.2"
 
 
 [build-system]
