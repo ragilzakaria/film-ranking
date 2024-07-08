@@ -1,5 +1,5 @@
-from lib.load_data import load_country_gdp
+from lib.load_data import load_movies_akas
 
 if __name__ == "__main__":
-    load_country_gdp()
+    load_movies_akas("./data/akas.tsv")
     print("Hello world!")

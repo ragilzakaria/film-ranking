@@ -2,3 +2,11 @@
 .idea
 
 __pycache__/
+
+# This is data folder use for testing,
+# we ignore it from git to make it simpler for development
+data/
+
+# This is where processed data stored during analysis
+# Potentially we use sqlite
+processed_data/
