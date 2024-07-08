@@ -1,0 +1,4 @@
+# Ignore IDE-specific file to make it agnostic of IDE
+.idea
+
+__pycache__/
