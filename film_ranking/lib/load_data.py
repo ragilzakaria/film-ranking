@@ -3,7 +3,7 @@ import sqlite3
 import sys
 import pandas as pd
 
-DATABASE_NAME = "movies.db"
+DATABASE_NAME = "film.db"
 csv.field_size_limit(sys.maxsize)
 
 
@@ -16,15 +16,16 @@ def lazy_pandas_csv_reader(file_path, chunksize=1000):
 def create_table_movies_akas(cursor):
     # Create the table
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS titles (
-            titleId TEXT PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS akas (
+            titleId TEXT,
             ordering INTEGER,
             title TEXT,
             region TEXT,
             language TEXT,
             types TEXT,
             attributes TEXT,
-            isOriginalTitle BOOLEAN
+            isOriginalTitle BOOLEAN,
+            PRIMARY KEY (titleId, title, region)
         )
     ''')
 
@@ -32,9 +33,9 @@ def create_table_movies_akas(cursor):
 def ingest_movies_akas(conn, cursor, file_path):
     for row in lazy_pandas_csv_reader(file_path):
         upsert_query = '''
-            INSERT INTO titles (titleId, ordering, title, region, language, types, attributes, isOriginalTitle)
+            INSERT INTO akas (titleId, ordering, title, region, language, types, attributes, isOriginalTitle)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(titleId) DO UPDATE SET
+            ON CONFLICT(titleId, title, region) DO UPDATE SET
                 ordering=excluded.ordering,
                 title=excluded.title,
                 region=excluded.region,
@@ -100,7 +101,6 @@ def ingest_movies_basics(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movies_basics(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_movies_basics(cursor)
@@ -211,7 +211,6 @@ def ingest_movies_crew(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movies_crew(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_movies_crew(cursor)
@@ -254,7 +253,6 @@ def ingest_movie_principals(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movie_principals(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_movie_principals(cursor)
@@ -292,7 +290,6 @@ def ingest_movie_ratings(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movie_ratings(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_movie_ratings(cursor)
@@ -336,7 +333,6 @@ def ingest_name_basics(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_name_basics(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_name_basics(cursor)
@@ -377,7 +373,6 @@ def ingest_episodes(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_episodes(file_path: str):
-    DATABASE_NAME = "movies.db"
     conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
     cursor = conn.cursor()
     create_table_episodes(cursor)
