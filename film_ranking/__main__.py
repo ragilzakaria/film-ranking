@@ -10,6 +10,7 @@ from lib.load_data import (
     load_events_data,
     update_country_of_origin,
 )
+from cli import run_cli
 
 if __name__ == "__main__":
     # load_movies_akas("./data/title.akas.tsv")
@@ -21,5 +22,5 @@ if __name__ == "__main__":
     # load_name_basics("./data/name.basics.tsv")
     # load_episodes("./data/title.episode.tsv")
     # load_events_data("./data/awards.csv")
-    update_country_of_origin()
-    print("Hello world!")
+    # update_country_of_origin()
+    run_cli()

@@ -13,6 +13,8 @@ pandas = "^2.2.2"
 jupyter = "^1.0.0"
 numpy = "^2.0.0"
 matplotlib = "^3.9.1"
+papermill = "^2.6.0"
+colorama = "^0.4.6"
 
 
 [tool.poetry.group.dev.dependencies]
