@@ -10,3 +10,6 @@ data/
 # This is where processed data stored during analysis
 # Potentially we use sqlite
 processed_data/
+
+# Notebook cache
+.ipynb_checkpoints/

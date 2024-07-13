@@ -3,12 +3,14 @@ import sqlite3
 import sys
 import pandas as pd
 
+from .movies_origin import get_country_of_origin
+
 DATABASE_NAME = "film.db"
 csv.field_size_limit(sys.maxsize)
 
 
-def lazy_pandas_csv_reader(file_path, chunksize=1000):
-    for chunk in pd.read_csv(file_path, chunksize=chunksize, delimiter='\t'):
+def lazy_pandas_csv_reader(file_path, chunksize=1000, delimiter='\t'):
+    for chunk in pd.read_csv(file_path, chunksize=chunksize, delimiter=delimiter):
         for row in chunk.itertuples(index=False, name=None):
             yield row
 
@@ -52,7 +54,7 @@ def ingest_movies_akas(conn, cursor, file_path):
 
 
 def load_movies_akas(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_movies_akas(cursor)
     conn.commit()
@@ -75,7 +77,8 @@ def create_table_movies_basics(cursor):
             startYear INTEGER,
             endYear INTEGER,
             runtimeMinutes INTEGER,
-            genres TEXT
+            genres TEXT,
+            countryOfOrigin TEXT,
         )
     ''')
 
@@ -101,7 +104,7 @@ def ingest_movies_basics(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movies_basics(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_movies_basics(cursor)
     conn.commit()
@@ -174,7 +177,7 @@ def ingest_countries_data(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_countries_data(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_countries(cursor)
     conn.commit()
@@ -211,7 +214,7 @@ def ingest_movies_crew(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movies_crew(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_movies_crew(cursor)
     conn.commit()
@@ -253,7 +256,7 @@ def ingest_movie_principals(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movie_principals(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_movie_principals(cursor)
     conn.commit()
@@ -290,7 +293,7 @@ def ingest_movie_ratings(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_movie_ratings(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_movie_ratings(cursor)
     conn.commit()
@@ -333,7 +336,7 @@ def ingest_name_basics(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_name_basics(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_name_basics(cursor)
     conn.commit()
@@ -373,7 +376,7 @@ def ingest_episodes(conn, cursor, file_path):
             # never call conn.close() from here!
 
 def load_episodes(file_path: str):
-    conn = sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    conn = get_connection()
     cursor = conn.cursor()
     create_table_episodes(cursor)
     conn.commit()
@@ -382,3 +385,77 @@ def load_episodes(file_path: str):
     conn.commit()
     # Close the connection
     conn.close()
+
+# for events
+def create_table_events(cursor):
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS awards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            eventId TEXT,
+            eventName TEXT,
+            awardName TEXT,
+            year INTEGER,
+            occurrence INTEGER,
+            winAnnouncementTime TEXT,
+            categoryName TEXT,
+            nomeneeNote TEXT,
+            name TEXT,
+            originalName TEXT,
+            songNames TEXT,
+            episodeNames TEXT,
+            characterNames TEXT,
+            isWinner BOOLEAN,
+            isPrimary BOOLEAN,
+            isSecondary BOOLEAN,
+            isPerson BOOLEAN,
+            isTitle BOOLEAN,
+            isCompany BOOLEAN,
+            const TEXT,
+            notes TEXT
+        )
+    ''')
+
+def ingest_events_data(conn, cursor, file_path):
+    for row in lazy_pandas_csv_reader(file_path, delimiter=','):
+        insert_query = '''
+            INSERT OR IGNORE INTO awards (eventId, eventName, awardName, year, occurrence, winAnnouncementTime, categoryName, nomeneeNote, name, originalName, songNames, episodeNames, characterNames, isWinner, isPrimary, isSecondary, isPerson, isTitle, isCompany, const, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        '''
+        cursor.execute(insert_query, row)
+        if cursor.lastrowid % 1000 == 0:
+            conn.commit()
+
+def load_events_data(file_path: str):
+    conn = get_connection()
+    cursor = conn.cursor()
+    create_table_events(cursor)
+    conn.commit()
+    ingest_events_data(conn, cursor, file_path)
+    conn.commit()
+    conn.close()
+
+
+def update_country_of_origin():
+    conn = get_connection()
+    cursor = conn.cursor()
+    for row in lazy_pandas_csv_reader("./data/title.basics.tsv"):
+        tconst = row[0]
+        country_of_origin = get_country_of_origin(tconst)
+        print(f"inserting {tconst} with country {country_of_origin}")
+        if country_of_origin:
+            upsert_query = f'''
+                UPDATE basics
+                SET countryOfOrigin = "{country_of_origin}"
+                WHERE tconst = "{tconst}";
+            '''
+            print(upsert_query)
+
+            cursor.execute(upsert_query)
+            # Optionally, commit periodically to avoid holding too many uncommitted rows in memory
+            if cursor.lastrowid % 1000 == 0:
+                conn.commit()
+                # never call conn.close() from here!
+
+
+def get_connection():
+    return sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
