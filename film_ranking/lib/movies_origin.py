@@ -1,7 +1,8 @@
 from playwright.sync_api import sync_playwright
 import re
 
-pattern = r'Country of origin\n(.*)'
+pattern = r"Country of origin\n(.*)"
+
 
 def get_country_of_origin(tconst: str):
     with sync_playwright() as p:
@@ -9,7 +10,7 @@ def get_country_of_origin(tconst: str):
         page = browser.new_page()
 
         # Open IMDb page for Spider-Man: Homecoming
-        page.goto(f'https://www.imdb.com/title/{tconst}')
+        page.goto(f"https://www.imdb.com/title/{tconst}")
 
         # Wait until the string "IMDb" appears in the page content
         # page.wait_for_selector('text=IMDb')

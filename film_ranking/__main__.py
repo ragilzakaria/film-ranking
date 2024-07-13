@@ -1,4 +1,15 @@
-from lib.load_data import load_movies_akas, load_movies_basics, load_countries_data, load_movies_crew, load_movie_principals, load_movie_ratings, load_name_basics, load_episodes, load_events_data, update_country_of_origin
+from lib.load_data import (
+    load_movies_akas,
+    load_movies_basics,
+    load_countries_data,
+    load_movies_crew,
+    load_movie_principals,
+    load_movie_ratings,
+    load_name_basics,
+    load_episodes,
+    load_events_data,
+    update_country_of_origin,
+)
 
 if __name__ == "__main__":
     # load_movies_akas("./data/title.akas.tsv")

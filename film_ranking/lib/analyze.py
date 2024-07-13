@@ -3,9 +3,9 @@ import pandas as pd
 
 
 def get_movies_with_regional_data(yearStart: int, yearEnd: int):
-    conn = sqlite3.connect('../processed_data/film.db')
+    conn = sqlite3.connect("../processed_data/film.db")
 
-    query = f'''
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -92,7 +92,7 @@ def get_movies_with_regional_data(yearStart: int, yearEnd: int):
     JOIN
         country_ranks cr ON ccd.countryName = cr.countryName
     ORDER BY ccd.qualityScore DESC;
-    '''
+    """
 
     df = pd.read_sql_query(query, conn)
 
@@ -101,10 +101,11 @@ def get_movies_with_regional_data(yearStart: int, yearEnd: int):
     conn.close()
     return df
 
-def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -161,7 +162,7 @@ def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
         awards_concat a ON o.titleId = a.const
     ORDER BY product DESC
     LIMIT {limit};
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -169,10 +170,11 @@ def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
     conn.close()
     return df
 
-def get_directors_rank(type: str, yearStart: int, yearEnd: int):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def get_directors_rank(type: str, yearStart: int, yearEnd: int):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -272,7 +274,7 @@ def get_directors_rank(type: str, yearStart: int, yearEnd: int):
         awards_concat a ON a.const = da.directorId
     ORDER BY
         finalAssessmentValue DESC;
-'''
+"""
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -280,10 +282,11 @@ def get_directors_rank(type: str, yearStart: int, yearEnd: int):
     conn.close()
     return df
 
-def get_producers_rank(type: str, yearStart, yearEnd):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def get_producers_rank(type: str, yearStart, yearEnd):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -370,11 +373,11 @@ def get_producers_rank(type: str, yearStart, yearEnd):
         producer_aggregates pa
     JOIN
         name_basics n ON pa.producerId = n.nconst
-    LEFT JOIN 
+    LEFT JOIN
         awards_concat a ON a.const = pa.producerId
     ORDER BY
         pa.totalProduct DESC;
-'''
+"""
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -382,10 +385,11 @@ def get_producers_rank(type: str, yearStart, yearEnd):
     conn.close()
     return df
 
-def get_actors_rank(yearStart: int, yearEnd: int):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def get_actors_rank(yearStart: int, yearEnd: int):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -476,7 +480,7 @@ def get_actors_rank(yearStart: int, yearEnd: int):
             actor_aggregates aa
         JOIN
             name_basics n ON aa.actorId = n.nconst
-        LEFT JOIN 
+        LEFT JOIN
             awards_concat a ON a.const = aa.actorId
         ORDER BY
             aa.totalProduct DESC
@@ -485,7 +489,7 @@ def get_actors_rank(yearStart: int, yearEnd: int):
         ar.*
     FROM
         actor_ranking ar
-'''
+"""
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -495,9 +499,9 @@ def get_actors_rank(yearStart: int, yearEnd: int):
 
 
 def actors_comparison(actorId1: str, actorId2: str):
-    conn = sqlite3.connect('../processed_data/film.db')
+    conn = sqlite3.connect("../processed_data/film.db")
 
-    query = f'''
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -592,7 +596,7 @@ def actors_comparison(actorId1: str, actorId2: str):
             actorId IN ('{actorId2}', '{actorId2}')
         ORDER BY
             aa.totalProduct DESC;
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -600,10 +604,11 @@ def actors_comparison(actorId1: str, actorId2: str):
     conn.close()
     return df
 
-def directors_comparison(directorId1: str, directorId2: str):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def directors_comparison(directorId1: str, directorId2: str):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -703,7 +708,7 @@ def directors_comparison(directorId1: str, directorId2: str):
     WHERE da.directorId IN ('{directorId1}', '{directorId2}')
     ORDER BY
         finalAssessmentValue DESC;
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -711,10 +716,11 @@ def directors_comparison(directorId1: str, directorId2: str):
     conn.close()
     return df
 
-def producers_comparison(producerId1: str, producerId2: str):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def producers_comparison(producerId1: str, producerId2: str):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -798,12 +804,12 @@ def producers_comparison(producerId1: str, producerId2: str):
         producer_aggregates pa
     JOIN
         name_basics n ON pa.producerId = n.nconst
-    LEFT JOIN 
+    LEFT JOIN
         awards_concat a ON a.const = pa.producerId
     WHERE pa.producerId IN ('{producerId1}', '{producerId2}')
     ORDER BY
         pa.totalProduct DESC;
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -811,10 +817,11 @@ def producers_comparison(producerId1: str, producerId2: str):
     conn.close()
     return df
 
-def cinematics_comparison(cinematicId1: str, cinematicId2: str):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def cinematics_comparison(cinematicId1: str, cinematicId2: str):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -869,7 +876,7 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
         awards_concat a ON o.titleId = a.const
     WHERE o.titleId IN ('{cinematicId1}', '{cinematicId2}')
     ORDER BY product DESC
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
@@ -877,10 +884,11 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
     conn.close()
     return df
 
-def countries_comparison(country1: str, country2: str):
-    conn = sqlite3.connect('../processed_data/film.db')
 
-    query = f'''
+def countries_comparison(country1: str, country2: str):
+    conn = sqlite3.connect("../processed_data/film.db")
+
+    query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
@@ -967,7 +975,7 @@ def countries_comparison(country1: str, country2: str):
         country_ranks cr ON ccd.countryName = cr.countryName
     WHERE ccd.countryName IN ('{country1}', '{country2}')
     ORDER BY ccd.qualityScore DESC;
-    '''
+    """
     df = pd.read_sql_query(query, conn)
 
     df.head()
