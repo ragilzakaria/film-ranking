@@ -19,6 +19,7 @@ matplotlib = "^3.9.1"
 pre-commit = "^3.7.1"
 black = "^24.4.2"
 pytest = "^8.2.2"
+playwright = "^1.45.0"
 
 [build-system]
 requires = ["poetry-core"]
