@@ -1,3 +1,8 @@
+import os
+
+from colorama import Fore
+
+from lib.util import print_color
 from lib.load_data import (
     load_movies_akas,
     load_movies_basics,
@@ -12,15 +17,36 @@ from lib.load_data import (
 )
 from cli import run_cli
 
+
+def load_data_service(folder: str):
+    os.makedirs(folder, exist_ok=True)
+    print_color("Loading movies...", Fore.WHITE)
+    load_movies_akas(f"./{folder}/title.akas.tsv")
+
+    print_color("Loading basics...", Fore.WHITE)
+    load_movies_basics(f"./{folder}/title.basics.tsv")
+
+    print_color("Loading countries...", Fore.WHITE)
+    load_countries_data(f"./{folder}/countries.tsv")
+
+    print_color("Loading crew...", Fore.WHITE)
+    load_movies_crew(f"./{folder}/title.crew.tsv")
+
+    print_color("Loading principals...", Fore.WHITE)
+    load_movie_principals(f"./{folder}/title.principals.tsv")
+
+    print_color("Loading ratings...", Fore.WHITE)
+    load_movie_ratings(f"./{folder}/title.ratings.tsv")
+
+    print_color("Loading name basics...", Fore.WHITE)
+    load_name_basics(f"./{folder}/name.basics.tsv")
+
+    print_color("Loading episode...", Fore.WHITE)
+    load_episodes(f"./{folder}/title.episode.tsv")
+
+    print_color("Loading awards...", Fore.WHITE)
+    load_events_data(f"./{folder}/awards.csv")
+
+
 if __name__ == "__main__":
-    # load_movies_akas("./data/title.akas.tsv")
-    # load_movies_basics("./data/title.basics.tsv")
-    # load_countries_data("./data/countries.tsv")
-    # load_movies_crew("./data/title.crew.tsv")
-    # load_movie_principals("./data/title.principals.tsv")
-    # load_movie_ratings("./data/title.ratings.tsv")
-    # load_name_basics("./data/name.basics.tsv")
-    # load_episodes("./data/title.episode.tsv")
-    # load_events_data("./data/awards.csv")
-    # update_country_of_origin()
-    run_cli()
+    run_cli(load_data_service)

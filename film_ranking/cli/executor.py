@@ -1,7 +1,7 @@
 import argparse
-import sys
-from datetime import datetime
-from colorama import init, Fore, Style
+from colorama import init, Fore
+
+from lib.util import print_color
 
 # Initialize colorama
 init(autoreset=True)
@@ -53,13 +53,9 @@ MOVIE_TYPES = [
 ]
 
 
-def print_color(text, color):
-    print(f"{color}{text}{Style.RESET_ALL}")
-
-
-def load_data(folder):
+def load_data(folder, load_data_service):
     print_color(f"Loading data from folder: {folder}", Fore.CYAN)
-    # Implement data loading logic here
+    load_data_service(folder)
 
 
 def analyze_top(category, **kwargs):
@@ -74,7 +70,7 @@ def compare(category, item1, item2):
     # Implement comparison logic here
 
 
-def run_cli():
+def run_cli(load_data_service):
     parser = argparse.ArgumentParser(description="Film Ranking CLI")
     subparsers = parser.add_subparsers(dest="command", help="Sub-command help")
 
@@ -119,7 +115,7 @@ def run_cli():
     args = parser.parse_args()
 
     if args.command == "load_data":
-        load_data(args.folder)
+        load_data(args.folder, load_data_service)
     elif args.command == "analyze":
         if args.analyze_type == "top_movies":
             analyze_top(

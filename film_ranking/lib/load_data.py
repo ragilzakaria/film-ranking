@@ -1,4 +1,5 @@
 import csv
+import os
 import sqlite3
 import sys
 import pandas as pd
@@ -83,7 +84,7 @@ def create_table_movies_basics(cursor):
             endYear INTEGER,
             runtimeMinutes INTEGER,
             genres TEXT,
-            countryOfOrigin TEXT,
+            countryOfOrigin TEXT
         )
     """
     )
@@ -500,4 +501,14 @@ def update_country_of_origin():
 
 
 def get_connection():
-    return sqlite3.connect(f"./processed_data/{DATABASE_NAME}")
+    # Define the path to the database directory
+    folder_path = "./processed_data"
+
+    # Create the directory if it doesn't exist
+    os.makedirs(folder_path, exist_ok=True)
+
+    # Define the full path to the database file
+    db_path = os.path.join(folder_path, DATABASE_NAME)
+
+    # Connect to the SQLite database
+    return sqlite3.connect(db_path)
