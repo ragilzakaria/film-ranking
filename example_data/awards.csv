@@ -1,0 +1,10 @@
+eventId,eventName,awardName,year,occurrence,winAnnouncementTime,categoryName,nomeneeNote,name,originalName,songNames,episodeNames,characterNames,isWinner,isPrimary,isSecondary,isPerson,isTitle,isCompany,const,notes
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Film,,La belle noiseuse,,,,,True,True,False,False,True,False,tt0101428,
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Film,,Jacques Rivette,,,,,True,False,True,True,False,False,nm0729626,
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Foreign Film,,The Double Life of Véronique,La double vie de Véronique,,,,True,True,False,False,True,False,tt0101765,Poland.
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Foreign Film,,Krzysztof Kieslowski,,,,,True,False,True,True,False,False,nm0001425,Poland.
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Short,,Le petit chat est mort,,,,,True,True,False,False,True,False,tt0195135,
+ev0000263,French Syndicate of Cinema Critics,Critics Award,1992,1,,Best Short,,Fejria Deliba,,,,,True,False,True,True,False,False,nm0217148,
+ev0000170,Cinanima,Grand Prize,2007,1,,Best Feature Film,,Le tueur de Montmartre,,,,,True,True,False,False,True,False,tt1337718,
+ev0000170,Cinanima,Grand Prize,2007,1,,Best Feature Film,,Borislav Sajtinac,,,,,True,False,True,True,False,False,nm1196263,
+ev0000170,Cinanima,Grand Prize,2007,1,,,,Madame Tutli-Putli,,,,,True,True,False,False,True,False,tt1029440,
