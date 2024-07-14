@@ -9,7 +9,7 @@ import nbformat
 from nbconvert import HTMLExporter
 import io
 
-from lib.util import print_color
+from ..lib.util import print_color
 
 # Initialize colorama
 init(autoreset=True)

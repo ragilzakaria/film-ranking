@@ -13,3 +13,5 @@ processed_data/
 
 # Notebook cache
 .ipynb_checkpoints/
+
+dist

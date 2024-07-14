@@ -2,8 +2,8 @@ import os
 
 from colorama import Fore
 
-from lib.util import print_color
-from lib.load_data import (
+from .lib.util import print_color
+from .lib.load_data import (
     load_movies_akas,
     load_movies_basics,
     load_countries_data,
@@ -15,7 +15,7 @@ from lib.load_data import (
     load_events_data,
     update_country_of_origin,
 )
-from cli import run_cli
+from .cli import run_cli
 
 
 def load_data_service(folder: str):
@@ -48,5 +48,9 @@ def load_data_service(folder: str):
     load_events_data(f"./{folder}/awards.csv")
 
 
-if __name__ == "__main__":
+def main():
     run_cli(load_data_service)
+
+
+if __name__ == "__main__":
+    main()

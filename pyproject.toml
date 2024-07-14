@@ -26,6 +26,9 @@ black = "^24.4.2"
 pytest = "^8.2.2"
 playwright = "^1.45.0"
 
+[tool.poetry.scripts]
+film_ranking = "film_ranking:__main__.main"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

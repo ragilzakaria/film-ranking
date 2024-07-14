@@ -121,3 +121,18 @@ Analyze the profile
 ```bash
 snakeviz output.prof
 ```
+
+
+# How to build
+
+```bash
+poetry build
+```
+
+Then after build you'll get a `dist` folder with the `whl` and `tar.gz` file. You can upload it as release.
+
+## How to install
+
+```bash
+pip install https://github.com/ragilzakaria/film-ranking/releases/download/v0.1.0/film_ranking-0.1.0-py3-none-any.whl
+```
