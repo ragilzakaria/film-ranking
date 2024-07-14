@@ -30,6 +30,30 @@ LIMIT {limit};
     return df
 
 
+def search_person(keyword: str, limit: int = 10):
+    conn = get_connection()
+    query = f"""
+    SELECT nb.nconst, nb.primaryProfession,
+       nb.primaryName,
+       GROUP_CONCAT(b.primaryTitle) titles,
+       b.genres
+FROM name_basics nb
+JOIN basics b
+    ON nb.knownForTitles = b.tconst
+    OR SUBSTR(nb.knownForTitles, 1, INSTR(nb.knownForTitles, ',') - 1) = b.tconst
+WHERE primaryName = "{keyword}"
+GROUP BY nconst
+LIMIT {limit};
+    """
+
+    df = pd.read_sql_query(query, conn)
+
+    df.head()
+
+    conn.close()
+    return df
+
+
 def get_movies_with_regional_data(yearStart: int, yearEnd: int, sort_by=None):
     conn = get_connection()
 

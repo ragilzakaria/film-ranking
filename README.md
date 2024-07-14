@@ -71,7 +71,13 @@ python film_ranking compare country ID NL -genre Family
 ## search film
 
 ```
-python film_ranking search search_movie -keyword 'Captain America' -limit 20
+python film_ranking search movie -keyword 'Captain America' -limit 20
+```
+
+## search person
+
+```bash
+python film_ranking search person -keyword 'Chris' -limit 20
 ```
 
 # Profiling
