@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def get_movies_with_regional_data(yearStart: int, yearEnd: int):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (

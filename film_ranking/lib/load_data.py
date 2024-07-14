@@ -88,6 +88,9 @@ def create_table_movies_basics(cursor):
         )
     """
     )
+    cursor.execute("CREATE INDEX idx_startYear ON basics (startYear)")
+    cursor.execute("CREATE INDEX idx_genres ON basics (genres)")
+    cursor.execute("CREATE INDEX idx_titleType ON basics (titleType)")
 
 
 def ingest_movies_basics(conn, cursor, file_path):
