@@ -102,8 +102,10 @@ def get_movies_with_regional_data(yearStart: int, yearEnd: int):
     return df
 
 
-def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
-    conn = sqlite3.connect("../processed_data/film.db")
+def get_cinematic_rank(
+    year_start: int, year_end: int, limit=None, genre=None, mtype=None, country=None
+):
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -118,9 +120,10 @@ def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
     JOIN
         basics b ON a.titleId = b.tconst
     WHERE
-        b.startYear >= {yearStart} AND b.startYear <= {yearEnd}
+        b.startYear >= {year_start} AND b.startYear <= {year_end}
+        {"AND b.genres =" + '"' + genre + '"' if genre else ""}
+        {"AND b.titleType = " + '"' + mtype + '"' if mtype else ""}
         AND LOWER(a.title) = LOWER(b.primaryTitle)
-        AND b.titleType = "{type}"
         AND a.isOriginalTitle = 0
         AND a.region != '\\N'
         AND length(a.region) < 3
@@ -160,8 +163,9 @@ def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
         ratings r ON o.titleId = r.tconst
     LEFT JOIN
         awards_concat a ON o.titleId = a.const
+    {"WHERE o.region = " + '"' + country + '"' if country else ""}
     ORDER BY product DESC
-    LIMIT {limit};
+    {"LIMIT " + str(limit) if limit else ""};
     """
     df = pd.read_sql_query(query, conn)
 

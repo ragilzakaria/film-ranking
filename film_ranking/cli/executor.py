@@ -86,6 +86,14 @@ def get_absolute_path(relative_path):
 
 
 def execute_notebook(notebook, output_notebook, global_args):
+    execute_notebook_by_params(
+        notebook,
+        output_notebook,
+        dict(start_year=global_args.start_year, end_year=global_args.end_year),
+    )
+
+
+def execute_notebook_by_params(notebook, output_notebook, params: dict):
     os.makedirs(os.path.dirname(notebook), exist_ok=True)
     os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
 
@@ -93,9 +101,7 @@ def execute_notebook(notebook, output_notebook, global_args):
     pm.execute_notebook(
         notebook,
         output_notebook,
-        parameters=dict(
-            start_year=global_args.start_year, end_year=global_args.end_year
-        ),
+        parameters=params,
     )
     display_notebook_output(output_notebook)
     print_color(
@@ -145,12 +151,32 @@ def analyze_top(global_args, category, **kwargs):
         notebook = "./notebook/top_actors.ipynb"
         output_notebook = f"./processed_data/{notebook}"
         execute_notebook(notebook, output_notebook, global_args)
+    elif category == "movies":
+        notebook = "./notebook/top_movies.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+
+        params = dict(kwargs.items())
+        genre = params["genre"]
+        mtype = params["type"]
+        country = params["country"]
+        limit = params["limit"]
+        start_year = global_args.start_year
+        end_year = global_args.end_year
+
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                genre=genre if genre else None,
+                mtype=mtype if mtype else None,
+                country=country if country else None,
+                limit=limit if limit else 10,
+                start_year=start_year,
+                end_year=end_year,
+            ),
+        )
     else:
         print_color("Not implemented...", Fore.RED)
-
-    # Implement analysis logic here
-    for key, value in kwargs.items():
-        print(f"  {key}: {value}")
 
 
 def compare(category, item1, item2):
@@ -196,6 +222,9 @@ def run_cli(load_data_service):
     top_movies_parser.add_argument("-type", choices=MOVIE_TYPES, help="Movie type")
     top_movies_parser.add_argument("-genre", choices=MOVIE_GENRES, help="Movie genre")
     top_movies_parser.add_argument("-country", help="Two-digit country code")
+    top_movies_parser.add_argument(
+        "-limit", help="Limit of how many movies being fetched"
+    )
 
     # Top countries
     analyze_subparsers.add_parser("top_countries", help="Analyze top countries")
@@ -243,7 +272,12 @@ def run_cli(load_data_service):
     elif args.command == "analyze":
         if args.analyze_type == "top_movies":
             analyze_top(
-                args, "movies", type=args.type, genre=args.genre, country=args.country
+                args,
+                "movies",
+                type=args.type,
+                genre=args.genre,
+                country=args.country,
+                limit=args.limit,
             )
         elif args.analyze_type:
             analyze_top(args, args.analyze_type.split("_")[1])
