@@ -1,5 +1,8 @@
 import sqlite3
 import pandas as pd
+from typing import Literal, Optional
+
+CinematicRankSort = Literal["impact_score", "awards_count"]
 
 
 def get_movies_with_regional_data(yearStart: int, yearEnd: int):
@@ -103,7 +106,13 @@ def get_movies_with_regional_data(yearStart: int, yearEnd: int):
 
 
 def get_cinematic_rank(
-    year_start: int, year_end: int, limit=None, genre=None, mtype=None, country=None
+    year_start: int,
+    year_end: int,
+    limit=None,
+    genre=None,
+    mtype=None,
+    country=None,
+    sort_by: Optional[CinematicRankSort] = None,
 ):
     conn = sqlite3.connect("./processed_data/film.db")
 
@@ -164,7 +173,7 @@ def get_cinematic_rank(
     LEFT JOIN
         awards_concat a ON o.titleId = a.const
     {"WHERE o.region = " + '"' + country + '"' if country else ""}
-    ORDER BY product DESC
+    ORDER BY {"awards_count" if sort_by == "awards_count" else "product" } DESC
     {"LIMIT " + str(limit) if limit else ""};
     """
     df = pd.read_sql_query(query, conn)

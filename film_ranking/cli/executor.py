@@ -160,6 +160,7 @@ def analyze_top(global_args, category, **kwargs):
         mtype = params["type"]
         country = params["country"]
         limit = params["limit"]
+        sort_by = params["sort_by"]
         start_year = global_args.start_year
         end_year = global_args.end_year
 
@@ -170,6 +171,7 @@ def analyze_top(global_args, category, **kwargs):
                 genre=genre if genre else None,
                 mtype=mtype if mtype else None,
                 country=country if country else None,
+                sort_by=sort_by if sort_by else None,
                 limit=limit if limit else 10,
                 start_year=start_year,
                 end_year=end_year,
@@ -225,6 +227,11 @@ def run_cli(load_data_service):
     top_movies_parser.add_argument(
         "-limit", help="Limit of how many movies being fetched"
     )
+    top_movies_parser.add_argument(
+        "-sort_by",
+        choices=["awards_count", "impact_score"],
+        help="How the output would be sorted",
+    )
 
     # Top countries
     analyze_subparsers.add_parser("top_countries", help="Analyze top countries")
@@ -278,6 +285,7 @@ def run_cli(load_data_service):
                 genre=args.genre,
                 country=args.country,
                 limit=args.limit,
+                sort_by=args.sort_by,
             )
         elif args.analyze_type:
             analyze_top(args, args.analyze_type.split("_")[1])
