@@ -129,6 +129,25 @@ def analyze_top(global_args, category, **kwargs):
             f"To learn more open the output at {get_absolute_path(output_notebook)}",
             Fore.GREEN,
         )
+    elif category == "directors":
+        notebook = "./notebook/top_directors.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        os.makedirs(os.path.dirname(notebook), exist_ok=True)
+        os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
+
+        print_color(f"Executing notebook {notebook}", Fore.WHITE)
+        pm.execute_notebook(
+            notebook,
+            output_notebook,
+            parameters=dict(
+                start_year=global_args.start_year, end_year=global_args.end_year
+            ),
+        )
+        display_notebook_output(output_notebook)
+        print_color(
+            f"To learn more open the output at {get_absolute_path(output_notebook)}",
+            Fore.GREEN,
+        )
     else:
         print_color("Not implemented...", Fore.RED)
 
@@ -183,6 +202,9 @@ def run_cli(load_data_service):
 
     # Top countries
     analyze_subparsers.add_parser("top_countries", help="Analyze top countries")
+
+    # Top directors
+    analyze_subparsers.add_parser("top_directors", help="Analyze top directors")
 
     # Compare command
     compare_parser = subparsers.add_parser("compare", help="Compare items")

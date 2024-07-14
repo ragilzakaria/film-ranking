@@ -172,7 +172,7 @@ def get_cinematic_rank(type: str, limit: int, yearStart: int, yearEnd: int):
 
 
 def get_directors_rank(type: str, yearStart: int, yearEnd: int):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
