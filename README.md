@@ -17,30 +17,58 @@ pre-commit run --all-files
 
 ## How to use
 
+## Load data
+
+The first step of using the CLI is to load the data, the data can be in any folder but it should look like this
+
+```
+data
+├── awards.csv
+├── countries.tsv
+├── name.basics.tsv
+├── title.akas.tsv
+├── title.basics.tsv
+├── title.crew.tsv
+├── title.episode.tsv
+├── title.principals.tsv
+└── title.ratings.tsv
+
+```
+
+and then run it using
+
+```bash
+python film_ranking load_data data
+```
+
+Please note that I have two additional data which are countries.tsv and awards.csv.
+The data is from:
+- https://www.kaggle.com/datasets/fernandol/countries-of-the-world
+- https://www.kaggle.com/datasets/iwooloowi/film-awards-imdb
 
 ## to get countries ranking, sort_by is optional
 ```bash
-python film_ranking -start-year 0000 -end-year 0001 analyze top_countries -sort_by gdp
+python film_ranking -start-year 1900 -end-year 2024 analyze top_countries -sort_by gdp
 ```
 
 ## to get movies ranking. limit, genre, mtype, and country are optional
 ```bash
-python film_ranking -start-year 0000 -end-year 0001 analyze top_movies -limit 100 -genre Genre -mtype movie -country US -sort_by awards_count/impact_score
+python film_ranking -start-year 1900 -end-year 2024 analyze top_movies -limit 100 -genre Family -type movie -country US -sort_by awards_count
 ```
 
 ## to get directors ranking, sort_by is optional
 ```bash
-python film_ranking -start year 0000 -end-year 0001 analyze top_directors -sort_by awardsCount
+python film_ranking -start-year 1900 -end-year 2024 analyze top_directors -sort_by awardsCount
 ```
 
 ## to get producers ranking, sort_by is optional
 ```bash
-python film_ranking -start year 0000 -end-year 0001 analyze top_producers -sort_by movieCount
+python film_ranking -start-year 1900 -end-year 2024 analyze top_producers -sort_by movieCount
 ```
 
 ## to get actors ranking, sort_by is optional
 ```bash
-python film_ranking -start year 0000 -end-year 0001 analyze top_actors -sort_by countryCount
+python film_ranking -start-year 1900 -end-year 2024 analyze top_actors -sort_by countryCount
 ```
 
 ## to compare actors
@@ -69,13 +97,11 @@ python film_ranking compare country ID NL -genre Family
 ```
 
 ## search film
-
-```
+```bash
 python film_ranking search movie -keyword 'Captain America' -limit 20
 ```
 
 ## search person
-
 ```bash
 python film_ranking search person -keyword 'Chris' -limit 20
 ```

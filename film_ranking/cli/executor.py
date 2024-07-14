@@ -212,7 +212,7 @@ def analyze_top(global_args, category, sort_by=None, **kwargs):
         mtype = params["type"]
         country = params["country"]
         limit = params["limit"]
-        sort_by = params["sort_by"]
+        sort_by = sort_by
         start_year = global_args.start_year
         end_year = global_args.end_year
 
@@ -234,7 +234,7 @@ def analyze_top(global_args, category, sort_by=None, **kwargs):
 
 
 def compare(category, genre, item1, item2):
-    print_color(f"Comparing {category} {genre}: {item1} vs {item2}", Fore.YELLOW)
+    print_color(f"Comparing {category}: {item1} vs {item2}", Fore.YELLOW)
     if category == "country":
         notebook = "./notebook/compare_countries.ipynb"
         output_notebook = f"./processed_data/{notebook}"
