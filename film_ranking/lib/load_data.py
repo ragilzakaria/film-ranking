@@ -34,6 +34,7 @@ def create_table_movies_akas(cursor):
         )
     """
     )
+    cursor.execute("CREATE INDEX idx_akas_title ON akas (title)")
 
 
 def ingest_movies_akas(conn, cursor, file_path):
@@ -91,6 +92,7 @@ def create_table_movies_basics(cursor):
     cursor.execute("CREATE INDEX idx_startYear ON basics (startYear)")
     cursor.execute("CREATE INDEX idx_genres ON basics (genres)")
     cursor.execute("CREATE INDEX idx_titleType ON basics (titleType)")
+    cursor.execute("CREATE INDEX idx_primaryTitle ON basics (primaryTitle)")
 
 
 def ingest_movies_basics(conn, cursor, file_path):
@@ -263,6 +265,7 @@ def create_table_movie_principals(cursor):
         )
     """
     )
+    cursor.execute("CREATE INDEX idx_principals_category ON principals (category)")
 
 
 def ingest_movie_principals(conn, cursor, file_path):
@@ -306,6 +309,8 @@ def create_table_movie_ratings(cursor):
         )
     """
     )
+    cursor.execute("CREATE INDEX idx_ratings_numVotes ON ratings (numVotes)")
+    cursor.execute("CREATE INDEX idx_ratings_averageRating ON ratings (averageRating)")
 
 
 def ingest_movie_ratings(conn, cursor, file_path):
@@ -350,6 +355,9 @@ def create_table_name_basics(cursor):
             knownForTitles TEXT
         )
     """
+    )
+    cursor.execute(
+        "CREATE INDEX idx_nameBasics_primaryName ON name_basics (primaryName)"
     )
 
 
@@ -458,6 +466,9 @@ def create_table_events(cursor):
         )
     """
     )
+    cursor.execute("CREATE INDEX idx_awards_awardName ON awards (awardName)")
+    cursor.execute("CREATE INDEX idx_awards_year ON awards (year)")
+    cursor.execute("CREATE INDEX idx_awards_categoryName ON awards (categoryName)")
 
 
 def ingest_events_data(conn, cursor, file_path):
