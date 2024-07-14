@@ -194,8 +194,52 @@ def compare(category, item1, item2):
                 country2=item2,
             ),
         )
-
-    # Implement comparison logic here
+    elif category == "actor":
+        notebook = "./notebook/compare_actors.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                actorId1=item1,
+                actorId2=item2,
+            ),
+        )
+    elif category == "director":
+        notebook = "./notebook/compare_directors.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                directorId1=item1,
+                directorId2=item2,
+            ),
+        )
+    elif category == "producer":
+        notebook = "./notebook/compare_producers.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                producerId1=item1,
+                producerId2=item2,
+            ),
+        )
+    elif category == "movie":
+        notebook = "./notebook/compare_movies.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                movieId1=item1,
+                movieId2=item2,
+            ),
+        )
+    else:
+        print_color("Not implemented...", Fore.RED)
 
 
 def run_cli(load_data_service):

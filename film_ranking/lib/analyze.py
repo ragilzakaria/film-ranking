@@ -512,7 +512,7 @@ def get_actors_rank(yearStart: int, yearEnd: int):
 
 
 def actors_comparison(actorId1: str, actorId2: str):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -584,6 +584,8 @@ def actors_comparison(actorId1: str, actorId2: str):
             COUNT(DISTINCT p.region) AS countryCount
         FROM
             actor_movies p
+        WHERE
+            actorId IN ('{actorId1}', '{actorId2}')
         GROUP BY
             p.actorId
     )
@@ -605,10 +607,6 @@ def actors_comparison(actorId1: str, actorId2: str):
             name_basics n ON aa.actorId = n.nconst
         LEFT JOIN
             awards_concat a ON a.const = aa.actorId
-        WHERE
-            actorId IN ('{actorId2}', '{actorId2}')
-        ORDER BY
-            aa.totalProduct DESC;
     """
     df = pd.read_sql_query(query, conn)
 
@@ -619,7 +617,7 @@ def actors_comparison(actorId1: str, actorId2: str):
 
 
 def directors_comparison(directorId1: str, directorId2: str):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -635,7 +633,6 @@ def directors_comparison(directorId1: str, directorId2: str):
         basics b ON a.titleId = b.tconst
     WHERE
         LOWER(a.title) = LOWER(b.primaryTitle)
-        AND b.titleType = '{type}'
         AND a.isOriginalTitle = 0
         AND a.region != '\\N'
         AND LENGTH(a.region) < 3
@@ -681,18 +678,18 @@ def directors_comparison(directorId1: str, directorId2: str):
             awards_concat a ON p.tconst = a.const
         WHERE
             p.category = 'director'
-            AND b.titleType = '{type}'
+            AND p.nconst IN ('{directorId1}', '{directorId2}')
     ),
     director_aggregates AS (
         SELECT
             d.directorId,
-            COUNT(d.movieId) AS {type}_count,
-            GROUP_CONCAT(d.primaryTitle) AS {type}s,
+            COUNT(d.movieId) AS movie_count,
+            GROUP_CONCAT(d.primaryTitle) AS movies,
             AVG(d.averageRating) AS avgRating,
             SUM(d.numVotes) AS totalVotes,
             AVG(d.averageRating) * SUM(d.numVotes) AS totalProduct,
-            SUM(CASE WHEN d.hasAwards > 0 THEN 1 ELSE 0 END) AS {type}sWithAwards,
-            SUM(CASE WHEN d.hasAwards = 0 THEN 1 ELSE 0 END) AS {type}sWithoutAwards
+            SUM(CASE WHEN d.hasAwards > 0 THEN 1 ELSE 0 END) AS moviesWithAwards,
+            SUM(CASE WHEN d.hasAwards = 0 THEN 1 ELSE 0 END) AS moviesWithoutAwards
         FROM
             director_movies d
         GROUP BY
@@ -701,26 +698,23 @@ def directors_comparison(directorId1: str, directorId2: str):
     SELECT
         da.directorId,
         n.primaryName AS directorName,
-        da.{type}s AS {type},
-        da.{type}_count AS {type}Count,
+        da.movies AS movie,
+        da.movie_count AS movieCount,
         a.awards,
         a.awardsCount,
         da.avgRating,
         da.totalVotes,
         da.totalProduct,
-        da.{type}sWithAwards,
-        da.{type}sWithoutAwards,
-        ((3 * da.{type}sWithAwards + 1 * da.{type}sWithoutAwards)/da.{type}_count) * da.avgRating *da.totalVotes AS finalAssessmentValue,
-        (da.{type}sWithAwards * 100 / da.{type}_count) AS awardPercentage
+        da.moviesWithAwards,
+        da.moviesWithoutAwards,
+        ((3 * da.moviesWithAwards + 1 * da.moviesWithoutAwards)/da.movie_count) * da.avgRating *da.totalVotes AS finalAssessmentValue,
+        (da.moviesWithAwards * 100 / da.movie_count) AS awardPercentage
     FROM
         director_aggregates da
     JOIN
         name_basics n ON da.directorId = n.nconst
     LEFT JOIN
         awards_concat a ON a.const = da.directorId
-    WHERE da.directorId IN ('{directorId1}', '{directorId2}')
-    ORDER BY
-        finalAssessmentValue DESC;
     """
     df = pd.read_sql_query(query, conn)
 
@@ -731,7 +725,7 @@ def directors_comparison(directorId1: str, directorId2: str):
 
 
 def producers_comparison(producerId1: str, producerId2: str):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -789,6 +783,7 @@ def producers_comparison(producerId1: str, producerId2: str):
             original_regions o ON p.tconst = o.titleId
         WHERE
             p.category = 'producer'
+            AND p.nconst IN ('{producerId1}', '{producerId2}')
     ),
     producer_aggregates AS (
         SELECT
@@ -819,7 +814,6 @@ def producers_comparison(producerId1: str, producerId2: str):
         name_basics n ON pa.producerId = n.nconst
     LEFT JOIN
         awards_concat a ON a.const = pa.producerId
-    WHERE pa.producerId IN ('{producerId1}', '{producerId2}')
     ORDER BY
         pa.totalProduct DESC;
     """
@@ -831,13 +825,14 @@ def producers_comparison(producerId1: str, producerId2: str):
     return df
 
 
-def cinematics_comparison(cinematicId1: str, cinematicId2: str):
-    conn = sqlite3.connect("../processed_data/film.db")
+def movies_comparison(movieId1: str, movieId2: str):
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
     SELECT
         a.titleId,
+        b.titleType,
         b.primaryTitle,
         a.region,
         a.ordering,
@@ -847,7 +842,7 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
     JOIN
         basics b ON a.titleId = b.tconst
     WHERE
-        AND LOWER(a.title) = LOWER(b.primaryTitle)
+        LOWER(a.title) = LOWER(b.primaryTitle)
         AND a.isOriginalTitle = 0
         AND a.region != '\\N'
         AND length(a.region) < 3
@@ -855,12 +850,14 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
     original_regions AS (
         SELECT
             titleId,
+            titleType,
             primaryTitle,
             region
         FROM
             ranked_regions
         WHERE
             rank = 1
+            AND titleId IN ('{movieId1}', '{movieId2}')
     ),
     awards_concat AS (
         SELECT
@@ -874,6 +871,7 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
     )
     SELECT
         o.titleId,
+        o.titleType,
         o.primaryTitle,
         o.region,
         r.numVotes,
@@ -887,7 +885,6 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
         ratings r ON o.titleId = r.tconst
     LEFT JOIN
         awards_concat a ON o.titleId = a.const
-    WHERE o.titleId IN ('{cinematicId1}', '{cinematicId2}')
     ORDER BY product DESC
     """
     df = pd.read_sql_query(query, conn)
@@ -948,6 +945,7 @@ def countries_comparison(country1: str, country2: str):
             original_regions o
         JOIN ratings r ON o.titleId = r.tconst
         JOIN countries ON countries.abbreviation = o.region
+        WHERE o.region IN ('{country1}', '{country2}')
         GROUP BY
             o.region
     ),
@@ -986,8 +984,6 @@ def countries_comparison(country1: str, country2: str):
         country_cinema_data ccd
     JOIN
         country_ranks cr ON ccd.countryName = cr.countryName
-    WHERE ccd.region IN ('{country1}', '{country2}')
-    ORDER BY ccd.qualityScore DESC;
     """
     df = pd.read_sql_query(query, conn)
 
