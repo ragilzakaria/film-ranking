@@ -5,8 +5,33 @@ from typing import Literal, Optional
 CinematicRankSort = Literal["impact_score", "awards_count"]
 
 
+def get_connection(file="./processed_data/film.db"):
+    conn = sqlite3.connect(file)
+    return conn
+
+
+def search_movie(keyword: str, limit: int = 10):
+    conn = get_connection()
+    query = f"""
+    SELECT b.tconst, b.originalTitle, b.startYear, GROUP_CONCAT(DISTINCT (nb.primaryName))
+FROM basics b
+JOIN principals p on p.tconst = b.tconst
+JOIN name_basics nb on nb.nconst = p.nconst
+WHERE originalTitle = "{keyword}"
+GROUP BY b.tconst
+LIMIT {limit};
+    """
+
+    df = pd.read_sql_query(query, conn)
+
+    df.head()
+
+    conn.close()
+    return df
+
+
 def get_movies_with_regional_data(yearStart: int, yearEnd: int, sort_by=None):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -114,7 +139,7 @@ def get_cinematic_rank(
     country=None,
     sort_by: Optional[CinematicRankSort] = None,
 ):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -185,7 +210,7 @@ def get_cinematic_rank(
 
 
 def get_directors_rank(yearStart: int, yearEnd: int, sort_by=None):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -294,7 +319,7 @@ def get_directors_rank(yearStart: int, yearEnd: int, sort_by=None):
 
 
 def get_producers_rank(yearStart: int, yearEnd: int, sort_by=None):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -394,7 +419,7 @@ def get_producers_rank(yearStart: int, yearEnd: int, sort_by=None):
 
 
 def get_actors_rank(yearStart: int, yearEnd: int, sort_by=None):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -499,7 +524,7 @@ def get_actors_rank(yearStart: int, yearEnd: int, sort_by=None):
 
 
 def actors_comparison(actorId1: str, actorId2: str):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -604,7 +629,7 @@ def actors_comparison(actorId1: str, actorId2: str):
 
 
 def directors_comparison(directorId1: str, directorId2: str):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -712,7 +737,7 @@ def directors_comparison(directorId1: str, directorId2: str):
 
 
 def producers_comparison(producerId1: str, producerId2: str):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -813,7 +838,7 @@ def producers_comparison(producerId1: str, producerId2: str):
 
 
 def movies_comparison(movieId1: str, movieId2: str):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (
@@ -883,7 +908,7 @@ def movies_comparison(movieId1: str, movieId2: str):
 
 
 def countries_comparison(country1: str, country2: str, genre=None):
-    conn = sqlite3.connect("./processed_data/film.db")
+    conn = get_connection()
 
     query = f"""
     WITH ranked_regions AS (

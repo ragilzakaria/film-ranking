@@ -67,6 +67,13 @@ python film_ranking compare movie tt0000001 tt0000002
 ```bash
 python film_ranking compare country ID NL -genre Family
 ```
+
+## search film
+
+```
+python film_ranking search search_movie -keyword 'Captain America' -limit 20
+```
+
 # Profiling
 
 ## Example profiling

@@ -131,6 +131,16 @@ def load_data(folder, load_data_service):
     load_data_service(folder)
 
 
+def search_movie(kw: str, limit: int):
+    notebook = "./notebook/search_movie.ipynb"
+    output_notebook = f"./processed_data/{notebook}"
+    execute_notebook_by_params(
+        notebook,
+        output_notebook,
+        dict(keyword=kw, limit=limit),
+    )
+
+
 def analyze_top(global_args, category, sort_by=None, **kwargs):
     # type=args.type, genre=args.genre, country=args.country
     print_color(f"Analyzing top {category}", Fore.GREEN)
@@ -292,6 +302,19 @@ def run_cli(load_data_service):
     load_parser = subparsers.add_parser("load_data", help="Load data from a folder")
     load_parser.add_argument("folder", help="Folder containing data files")
 
+    # Load data
+    search_parser = subparsers.add_parser("search", help="Tool to search")
+    search_subparsers = search_parser.add_subparsers(
+        dest="search_entity", help="search entity"
+    )
+    # Top director, actor, producer
+    for entity in ["movie", "director", "actor", "producer"]:
+        esubparser = search_subparsers.add_parser(
+            f"search_{entity}", help=f"Search {entity}"
+        )
+        esubparser.add_argument("-keyword", help="Search keyword")
+        esubparser.add_argument("-limit", help="Search keyword")
+
     # Analyze command
     analyze_parser = subparsers.add_parser("analyze", help="Analyze data")
     analyze_subparsers = analyze_parser.add_subparsers(
@@ -396,6 +419,9 @@ def run_cli(load_data_service):
 
     if args.command == "load_data":
         load_data(args.folder, load_data_service)
+    elif args.command == "search":
+        if args.search_entity == "search_movie":
+            search_movie(kw=args.keyword, limit=args.limit if args.limit else 10)
     elif args.command == "analyze":
         if args.analyze_type == "top_movies":
             analyze_top(
