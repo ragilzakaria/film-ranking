@@ -17,6 +17,7 @@ papermill = "^2.6.0"
 colorama = "^0.4.6"
 nbformat = "^5.10.4"
 nbconvert = "^7.16.4"
+snakeviz = "^2.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

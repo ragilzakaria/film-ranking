@@ -3212,6 +3212,20 @@ files = [
 ]
 
 [[package]]
+name = "snakeviz"
+version = "2.2.0"
+description = "A web-based viewer for Python profiler output"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "snakeviz-2.2.0-py2.py3-none-any.whl", hash = "sha256:569e2d71c47f80a886aa6e70d6405cb6d30aa3520969ad956b06f824c5f02b8e"},
+    {file = "snakeviz-2.2.0.tar.gz", hash = "sha256:7bfd00be7ae147eb4a170a471578e1cd3f41f803238958b6b8efcf2c698a6aa9"},
+]
+
+[package.dependencies]
+tornado = ">=2.0"
+
+[[package]]
 name = "sniffio"
 version = "1.3.1"
 description = "Sniff out which async library your code is running under"
@@ -3641,4 +3655,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "d24da398438635f8406f3f77d9ede330fca3ea72b21c5e6657708682517ffe35"
+content-hash = "84b1764800248c1c62ff7c70c70fba080c47edc08c10aecdd835c797a30727ce"

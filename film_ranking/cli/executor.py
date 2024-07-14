@@ -391,6 +391,9 @@ def run_cli(load_data_service):
         )
         args.end_year = current_year
 
+    args.end_year = current_year if args.end_year is None else args.end_year
+    args.start_year = 1000 if args.start_year is None else args.start_year
+
     if args.command == "load_data":
         load_data(args.folder, load_data_service)
     elif args.command == "analyze":

@@ -67,3 +67,18 @@ python film_ranking compare movie tt0000001 tt0000002
 ```bash
 python film_ranking compare country ID NL -genre Family
 ```
+# Profiling
+
+## Example profiling
+
+Run the profiling
+
+```bash
+python -m cProfile -o output.prof film_ranking/__main__.py analyze top_countries -sort_by gdp
+```
+
+Analyze the profile
+
+```bash
+snakeviz output.prof
+```
