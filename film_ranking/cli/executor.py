@@ -85,6 +85,25 @@ def get_absolute_path(relative_path):
     return os.path.normpath(os.path.join(project_root, relative_path))
 
 
+def execute_notebook(notebook, output_notebook, global_args):
+    os.makedirs(os.path.dirname(notebook), exist_ok=True)
+    os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
+
+    print_color(f"Executing notebook {notebook}", Fore.WHITE)
+    pm.execute_notebook(
+        notebook,
+        output_notebook,
+        parameters=dict(
+            start_year=global_args.start_year, end_year=global_args.end_year
+        ),
+    )
+    display_notebook_output(output_notebook)
+    print_color(
+        f"To learn more open the output at {get_absolute_path(output_notebook)}",
+        Fore.GREEN,
+    )
+
+
 def display_notebook_output(notebook_path):
     with open(notebook_path, "r", encoding="utf-8") as f:
         nb = nbformat.read(f, as_version=4)
@@ -113,79 +132,19 @@ def analyze_top(global_args, category, **kwargs):
     if category == "countries":
         notebook = "./notebook/top_countries.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        os.makedirs(os.path.dirname(notebook), exist_ok=True)
-        os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
-
-        print_color(f"Executing notebook {notebook}", Fore.WHITE)
-        pm.execute_notebook(
-            notebook,
-            output_notebook,
-            parameters=dict(
-                start_year=global_args.start_year, end_year=global_args.end_year
-            ),
-        )
-        display_notebook_output(output_notebook)
-        print_color(
-            f"To learn more open the output at {get_absolute_path(output_notebook)}",
-            Fore.GREEN,
-        )
+        execute_notebook(notebook, output_notebook, global_args)
     elif category == "directors":
         notebook = "./notebook/top_directors.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        os.makedirs(os.path.dirname(notebook), exist_ok=True)
-        os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
-
-        print_color(f"Executing notebook {notebook}", Fore.WHITE)
-        pm.execute_notebook(
-            notebook,
-            output_notebook,
-            parameters=dict(
-                start_year=global_args.start_year, end_year=global_args.end_year
-            ),
-        )
-        display_notebook_output(output_notebook)
-        print_color(
-            f"To learn more open the output at {get_absolute_path(output_notebook)}",
-            Fore.GREEN,
-        )
+        execute_notebook(notebook, output_notebook, global_args)
     elif category == "producers":
         notebook = "./notebook/top_producers.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        os.makedirs(os.path.dirname(notebook), exist_ok=True)
-        os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
-
-        print_color(f"Executing notebook {notebook}", Fore.WHITE)
-        pm.execute_notebook(
-            notebook,
-            output_notebook,
-            parameters=dict(
-                start_year=global_args.start_year, end_year=global_args.end_year
-            ),
-        )
-        display_notebook_output(output_notebook)
-        print_color(
-            f"To learn more open the output at {get_absolute_path(output_notebook)}",
-            Fore.GREEN,
-        )
+        execute_notebook(notebook, output_notebook, global_args)
     elif category == "actors":
         notebook = "./notebook/top_actors.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        os.makedirs(os.path.dirname(notebook), exist_ok=True)
-        os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
-
-        print_color(f"Executing notebook {notebook}", Fore.WHITE)
-        pm.execute_notebook(
-            notebook,
-            output_notebook,
-            parameters=dict(
-                start_year=global_args.start_year, end_year=global_args.end_year
-            ),
-        )
-        display_notebook_output(output_notebook)
-        print_color(
-            f"To learn more open the output at {get_absolute_path(output_notebook)}",
-            Fore.GREEN,
-        )
+        execute_notebook(notebook, output_notebook, global_args)
     else:
         print_color("Not implemented...", Fore.RED)
 
