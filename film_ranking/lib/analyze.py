@@ -284,7 +284,7 @@ def get_directors_rank(type: str, yearStart: int, yearEnd: int):
 
 
 def get_producers_rank(type: str, yearStart, yearEnd):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -387,7 +387,7 @@ def get_producers_rank(type: str, yearStart, yearEnd):
 
 
 def get_actors_rank(yearStart: int, yearEnd: int):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
