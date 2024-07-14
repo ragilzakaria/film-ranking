@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "film_ranking"
-version = "0.1.0"
+version = "0.1.1"
 description = "Movies impact analyzer/ranking tool."
 authors = ["Maulana Ragil Zakariah <m.zakariah@student.uw.edu.pl>"]
 license = "MIT"
@@ -18,13 +18,13 @@ colorama = "^0.4.6"
 nbformat = "^5.10.4"
 nbconvert = "^7.16.4"
 snakeviz = "^2.2.0"
+playwright = "^1.45.0"
 
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
 black = "^24.4.2"
 pytest = "^8.2.2"
-playwright = "^1.45.0"
 
 [tool.poetry.scripts]
 film_ranking = "film_ranking:__main__.main"
