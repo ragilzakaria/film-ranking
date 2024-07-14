@@ -899,7 +899,7 @@ def cinematics_comparison(cinematicId1: str, cinematicId2: str):
 
 
 def countries_comparison(country1: str, country2: str):
-    conn = sqlite3.connect("../processed_data/film.db")
+    conn = sqlite3.connect("./processed_data/film.db")
 
     query = f"""
     WITH ranked_regions AS (
@@ -914,7 +914,7 @@ def countries_comparison(country1: str, country2: str):
     JOIN
         basics b ON a.titleId = b.tconst
     WHERE
-        AND LOWER(a.title) = LOWER(b.primaryTitle)
+        LOWER(a.title) = LOWER(b.primaryTitle)
         AND a.isOriginalTitle = 0
         AND a.region != '\\N'
         AND LENGTH(a.region) < 3
@@ -986,7 +986,7 @@ def countries_comparison(country1: str, country2: str):
         country_cinema_data ccd
     JOIN
         country_ranks cr ON ccd.countryName = cr.countryName
-    WHERE ccd.countryName IN ('{country1}', '{country2}')
+    WHERE ccd.region IN ('{country1}', '{country2}')
     ORDER BY ccd.qualityScore DESC;
     """
     df = pd.read_sql_query(query, conn)

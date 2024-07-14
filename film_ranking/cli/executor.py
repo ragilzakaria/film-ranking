@@ -183,6 +183,18 @@ def analyze_top(global_args, category, **kwargs):
 
 def compare(category, item1, item2):
     print_color(f"Comparing {category}: {item1} vs {item2}", Fore.YELLOW)
+    if category == "country":
+        notebook = "./notebook/compare_countries.ipynb"
+        output_notebook = f"./processed_data/{notebook}"
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                country1=item1,
+                country2=item2,
+            ),
+        )
+
     # Implement comparison logic here
 
 
