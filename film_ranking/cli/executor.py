@@ -131,26 +131,58 @@ def load_data(folder, load_data_service):
     load_data_service(folder)
 
 
-def analyze_top(global_args, category, **kwargs):
+def analyze_top(global_args, category, sort_by=None, **kwargs):
     # type=args.type, genre=args.genre, country=args.country
     print_color(f"Analyzing top {category}", Fore.GREEN)
 
     if category == "countries":
         notebook = "./notebook/top_countries.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        execute_notebook(notebook, output_notebook, global_args)
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                start_year=global_args.start_year,
+                end_year=global_args.end_year,
+                sort_by=sort_by,
+            ),
+        )
     elif category == "directors":
         notebook = "./notebook/top_directors.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        execute_notebook(notebook, output_notebook, global_args)
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                start_year=global_args.start_year,
+                end_year=global_args.end_year,
+                sort_by=sort_by,
+            ),
+        )
     elif category == "producers":
         notebook = "./notebook/top_producers.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        execute_notebook(notebook, output_notebook, global_args)
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                start_year=global_args.start_year,
+                end_year=global_args.end_year,
+                sort_by=sort_by,
+            ),
+        )
     elif category == "actors":
         notebook = "./notebook/top_actors.ipynb"
         output_notebook = f"./processed_data/{notebook}"
-        execute_notebook(notebook, output_notebook, global_args)
+        execute_notebook_by_params(
+            notebook,
+            output_notebook,
+            dict(
+                start_year=global_args.start_year,
+                end_year=global_args.end_year,
+                sort_by=sort_by,
+            ),
+        )
     elif category == "movies":
         notebook = "./notebook/top_movies.ipynb"
         output_notebook = f"./processed_data/{notebook}"
@@ -181,18 +213,15 @@ def analyze_top(global_args, category, **kwargs):
         print_color("Not implemented...", Fore.RED)
 
 
-def compare(category, item1, item2):
-    print_color(f"Comparing {category}: {item1} vs {item2}", Fore.YELLOW)
+def compare(category, genre, item1, item2):
+    print_color(f"Comparing {category} {genre}: {item1} vs {item2}", Fore.YELLOW)
     if category == "country":
         notebook = "./notebook/compare_countries.ipynb"
         output_notebook = f"./processed_data/{notebook}"
         execute_notebook_by_params(
             notebook,
             output_notebook,
-            dict(
-                country1=item1,
-                country2=item2,
-            ),
+            dict(country1=item1, country2=item2, genre=genre),
         )
     elif category == "actor":
         notebook = "./notebook/compare_actors.ipynb"
@@ -290,16 +319,46 @@ def run_cli(load_data_service):
     )
 
     # Top countries
-    analyze_subparsers.add_parser("top_countries", help="Analyze top countries")
+    countries_subparsers = analyze_subparsers.add_parser(
+        "top_countries", help="Analyze top countries"
+    )
+    country_sort_choices = [
+        "population",
+        "gdp_capita",
+        "gdp",
+        "numFilms",
+        "votes",
+        "avgRating",
+        "qualityScore",
+    ]
+    countries_subparsers.add_argument("-sort_by", choices=country_sort_choices)
 
     # Top directors
-    analyze_subparsers.add_parser("top_directors", help="Analyze top directors")
+    directors_subparsers = analyze_subparsers.add_parser(
+        "top_directors", help="Analyze top directors"
+    )
+    director_sort_choices = [
+        "movieCount",
+        "awardsCount",
+        "avgRating",
+        "moviesWithAwards",
+        "finalAssessmentValue",
+    ]
+    directors_subparsers.add_argument("-sort_by", choices=director_sort_choices)
 
     # Top producers
-    analyze_subparsers.add_parser("top_producers", help="Analyze top producers")
+    producers_subparsers = analyze_subparsers.add_parser(
+        "top_producers", help="Analyze top producers"
+    )
+    producer_sort_choices = ["movieCount", "awardsCount", "avgRating", "totalProduct"]
+    producers_subparsers.add_argument("-sort_by", choices=producer_sort_choices)
 
     # Top actors
-    analyze_subparsers.add_parser("top_actors", help="Analyze top actors")
+    actors_subparsers = analyze_subparsers.add_parser(
+        "top_actors", help="Analyze top actors"
+    )
+    actor_sort_choices = ["movieCount", "awardsCount", "countryCount", "avgRating"]
+    actors_subparsers.add_argument("-sort_by", choices=actor_sort_choices)
 
     # Compare command
     compare_parser = subparsers.add_parser("compare", help="Compare items")
@@ -313,6 +372,8 @@ def run_cli(load_data_service):
         )
         cat_parser.add_argument(f"{category}1", help=f"First {category} to compare")
         cat_parser.add_argument(f"{category}2", help=f"Second {category} to compare")
+
+        cat_parser.add_argument("-genre", choices=MOVIE_GENRES, help="Movie genre")
 
     args = parser.parse_args()
 
@@ -343,14 +404,21 @@ def run_cli(load_data_service):
                 limit=args.limit,
                 sort_by=args.sort_by,
             )
-        elif args.analyze_type:
-            analyze_top(args, args.analyze_type.split("_")[1])
+        elif args.analyze_type == "top_countries":
+            analyze_top(args, args.analyze_type.split("_")[1], args.sort_by)
+        elif args.analyze_type == "top_directors":
+            analyze_top(args, args.analyze_type.split("_")[1], args.sort_by)
+        elif args.analyze_type == "top_producers":
+            analyze_top(args, args.analyze_type.split("_")[1], args.sort_by)
+        elif args.analyze_type == "top_actors":
+            analyze_top(args, args.analyze_type.split("_")[1], args.sort_by)
         else:
             print_color("Error: Please specify an analysis type", Fore.RED)
     elif args.command == "compare":
         if args.compare_type:
             compare(
                 args.compare_type,
+                args.genre,
                 getattr(args, f"{args.compare_type}1"),
                 getattr(args, f"{args.compare_type}2"),
             )
