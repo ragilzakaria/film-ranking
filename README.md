@@ -134,5 +134,5 @@ Then after build you'll get a `dist` folder with the `whl` and `tar.gz` file. Yo
 ## How to install
 
 ```bash
-pip install https://github.com/ragilzakaria/film-ranking/releases/download/v0.1.1/film_ranking-0.1.1-py3-none-any.whl
+pip install https://github.com/ragilzakaria/film-ranking/releases/download/v0.1.2/film_ranking-0.1.2-py3-none-any.whl
 ```
