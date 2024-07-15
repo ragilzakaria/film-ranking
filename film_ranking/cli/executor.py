@@ -1,5 +1,6 @@
 import argparse
 import os
+from importlib import resources
 
 from colorama import init, Fore
 import papermill as pm
@@ -94,12 +95,16 @@ def execute_notebook(notebook, output_notebook, global_args):
 
 
 def execute_notebook_by_params(notebook, output_notebook, params: dict):
-    os.makedirs(os.path.dirname(notebook), exist_ok=True)
+
+    notebook_path = str(resources.files("film_ranking") / ".." / notebook)
+    print_color(str(notebook_path), Fore.RED)
+
+    os.makedirs(os.path.dirname(notebook_path), exist_ok=True)
     os.makedirs(os.path.dirname(output_notebook), exist_ok=True)
 
-    print_color(f"Executing notebook {notebook}", Fore.WHITE)
+    print_color(f"Executing notebook {notebook_path}", Fore.WHITE)
     pm.execute_notebook(
-        notebook,
+        notebook_path,
         output_notebook,
         parameters=params,
     )
